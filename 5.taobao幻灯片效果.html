@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .banner {
+            width: 790px;
+            height: 340px;
+            margin: 30px auto;
+            border: 1px solid red;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .banner ul {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+        
+        .banner ul li {
+            float: left;
+        }
+        
+        .banner ol {
+            width: 225px;
+            height: 20px;
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+        }
+        
+        .banner ol li {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ccc;
+            float: left;
+            margin-right: 5px;
+            text-indent: -999em;
+            cursor: pointer;
+        }
+        
+        .banner ol li.active {
+            background-color: blue;
+        }
+        
+        #leftarrow,
+        #rightarrow {
+            color: #fff;
+            font-size: 100px;
+            text-decoration: none;
+            position: absolute;
+            top: 50%;
+            margin-top: -60px;
+            display: none;
+        }
+        
+        #leftarrow {
+            left: 20px;
+        }
+        
+        #rightarrow {
+            right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="banner">
+        <!-- 轮播图片 -->
+        <ul>
+
+            <li><img src="img/1.jpg" alt=""></li>
+            <li><img src="img/2.jpg" alt=""></li>
+            <li><img src="img/3.jpg" alt=""></li>
+            <li><img src="img/4.jpg" alt=""></li>
+            <li><img src="img/5.jpg" alt=""></li>
+            <li><img src="img/1.jpg" alt=""></li>
+        </ul>
+        <ol>
+            <!-- 切换按钮，小圆圈 -->
+            <li class="active">1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+        </ol>
+        <!-- 左右箭头 -->
+        <a href="javascript:;" id="leftarrow">&lt;</a>
+        <a href="javascript:;" id="rightarrow">&gt;</a>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.js"></script>
+    <script>
+        const $banner = $('.banner')
+        const $ul = $('ul')
+        const $piclist = $('ul li')
+        const $cirlist = $('ol li')
+        const $last = $('#leftarrow')
+        const $next = $('#rightarrow')
+        let $index = 0
+        let $picw = $piclist.eq(0).width()
+        let autoplay = null
+
+        function banner() {
+            if ($index === -1) {
+                $ul.css('left', -$picw * $cirlist.length)
+                $index = $piclist.length - 2
+            }
+            $cirlist.eq($index).addClass('active').siblings().removeClass('active')
+            $ul.stop(true).animate({
+                left: -$index * $picw
+            })
+        }
+        $banner.hover(function() {
+            $last.show()
+            $next.show()
+        }, function() {
+            $last.hide()
+            $next.hide()
+        })
+        $ul.css({
+            width: $picw * $piclist.length
+        })
+        $cirlist.on('click', function() {
+            $index = $(this).index('ol li')
+            banner()
+        })
+        $next.on('click', function() {
+            $index++
+            if ($index > $piclist.length - 1) {
+                $ul.css({
+                    left: 0
+                })
+                $index = 1
+            }
+            banner()
+            if ($index == $piclist.length - 1) {
+                $cirlist.eq(0).addClass('active').siblings().removeClass('active')
+            }
+
+        })
+        $last.on('click', function() {
+            $index--
+
+            banner()
+        })
+        autoplay = setInterval(function() {
+            $next.click()
+        }, 3000)
+        $banner.hover(function() {
+            clearInterval(autoplay)
+        }, function() {
+            autoplay = setInterval(function() {
+                $next.click()
+            }, 3000)
+        })
+
+        // 1. 获取元素。
+        // const $banner = $('.banner');
+        // const $ulist = $('.banner ul'); //运动的列表
+        // const $piclist = $('.banner ul li'); //6张图
+        // const $btnlist = $('.banner ol li'); //5个按钮
+        // const $leftarrow = $('#leftarrow'); //左右箭头
+        // const $rightarrow = $('#rightarrow');
+        // let $index = 0;
+        // let $timer = null;
+
+
+        // //2.无缝就得改变布局，重新计算无序列表的宽度。
+        // let $picwidth = $piclist.eq(0).width(); //790  1个图片的宽度
+        // $ulist.css({
+        //     width: $picwidth * $piclist.length
+        // });
+
+        // //3.给小圆圈添加点击事件。
+
+        // $btnlist.on('click', function() {
+        //     $index = $(this).index() - 1; //当前点击的按钮的索引。
+        //     tabswitch();
+        // });
+
+        // //4.鼠标移入移出banner，显示隐藏左右箭头。
+        // $banner.hover(function() {
+        //     $leftarrow.show();
+        //     $rightarrow.show();
+        //     clearInterval($timer);
+        // }, function() {
+        //     $leftarrow.hide();
+        //     $rightarrow.hide();
+        //     $timer = setInterval(function() {
+        //         $rightarrow.click();
+        //     }, 2000);
+        // });
+
+        // //5.左右箭头添加点击事件。
+        // $rightarrow.on('click', function() {
+        //     tabswitch();
+        // });
+
+        // $leftarrow.on('click', function() {
+        //     $index -= 2;
+        //     tabswitch();
+        // });
+
+        // //切换过程的封装
+        // function tabswitch() {
+        //     $index++;
+
+        //     //重点1：判断如果是图片的最后一张，重置位置。
+        //     if ($index === $btnlist.length + 1) {
+        //         $ulist.css('left', 0); //重置位置。
+        //         $index = 1;
+        //     }
+
+        //     if ($index < 0) {
+        //         $ulist.css('left', -$picwidth * $btnlist.length); //重置位置。
+        //         $index = $btnlist.length - 1;
+        //     }
+
+        //     if ($index === $btnlist.length) {
+        //         $btnlist.eq(0).addClass('active').siblings('ol li').removeClass('active'); //重点1切换的时候触发的
+        //     } else {
+        //         $btnlist.eq($index).addClass('active').siblings('ol li').removeClass('active'); //给当前的小圆圈添加类
+        //     }
+        //     $ulist.stop(true).animate({ //运动的位置根据索引位置进行匹配的
+        //         left: -$picwidth * $index
+        //     });
+        //     $('title').html($index);
+        // }
+
+        // // 6.自动轮播
+        // $timer = setInterval(function() {
+        //     $rightarrow.click();
+        // }, 2000);
+    </script>
+</body>
+
+</html>
+
+<!-- 
+    1.尺寸
+    width([val|fn]):内容的宽
+    innerWidth() : 内容的宽 + padding
+    outerWidth() : 内容的宽 + padding + border
+    outerWidth(true) : 内容的宽 + padding + border + margin
+
+    height([val|fn]) 
+    innerHeight() 
+    outerHeight([soptions]) 
+
+    2.css(name|pro|[,val|fn])读写匹配元素的样式属性。
+    通过css方法的链式赋值进行操作。
+    $('.box').css('width', '200px').css('height', '500px').css('background', 'red'); //写入
+    通过对象的格式写入
+    $('.box').css({//写入
+        width: 200,
+        height: 300,
+        background: 'blue'
+    });
+
+    alert($('.box').css('width')); //读取
+
+    3.html([val|fn]) : 相当于原生js里面的innerHTML
+    $('body').html('<strong>hehe</strong>');//写入
+    alert($('body').html()); //读取
+
+    4.text([val|fn]) : 相当于原生js里面的innerText
+    
+    5.val([val|fn|arr]) :相当于原生js里面的value值，针对于表单操作。
+
+    6.show():显示隐藏的元素
+
+    7.hide():隐藏显示的元素
+
+
+ -->
+
+<!-- 
+     幻灯片效果思路：
+     1.左右箭头隐藏的，通过鼠标移入移出显示左右箭头
+     2.点击小圆圈，图片对应的位置发生变化。
+     3.左右箭头的事件。
+     无缝轮播，所有的无缝轮播都要改变结构。
+     运动是过程的，css位置没有过程的。
+  -->

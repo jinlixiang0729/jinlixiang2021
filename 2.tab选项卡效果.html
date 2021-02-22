@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .tab .item {
+            width: 200px;
+            height: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: none;
+        }
+        
+        .active {
+            background-color: red;
+        }
+        
+        .tab div.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tab">
+        <button class="active">html</button>
+        <button>css</button>
+        <button>javascript</button>
+        <div class="item show">HTML称为超文本标记语言，是一种标记语言。它包括一系列标签．通过这些标签可以将网络上的文档格式统一，使分散的Internet资源连接为一个逻辑整体。HTML文本是由HTML命令组成的描述性文本，HTML命令可以说明文字，图形、动画、声音、表格、链接等。</div>
+        <div class="item">层叠样式表(英文全称：Cascading Style Sheets)是一种用来表现HTML（标准通用标记语言的一个应用）或XML（标准通用标记语言的一个子集）等文件样式的计算机语言。CSS不仅可以静态地修饰网页，还可以配合各种脚本语言动态地对网页各元素进行格式化。</div>
+        <div class="item">JavaScript（简称“JS”） 是一种具有函数优先的轻量级，解释型或即时编译型的编程语言。虽然它是作为开发Web页面的脚本语言而出名，但是它也被用到了很多非浏览器环境中，JavaScript 基于原型编程、多范式的动态脚本语言，并且支持面向对象、命令式和声明式（如函数式编程）风格。</div>
+    </div>
+</body>
+
+</html>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.js"></script>
+<script>
+    // $('.tab button').on('click', function() {
+    //     $(this).addClass('active').siblings('button').removeClass('active')
+    //     $('.tab .item').eq($(this).index()).addClass('show').siblings('.item').removeClass('show')
+    // })
+    let timer = null
+    $('.tab button').on('mouseover', function() {
+        timer = setTimeout(() => {
+            $(this).addClass('active').siblings('button').removeClass('active')
+            $('.tab .item').eq($(this).index()).addClass('show').siblings('.item').removeClass('show')
+        }, 300);
+
+    })
+    $('.tab button').on('mouseout', function() {
+        clearTimeout(timer)
+    })
+</script>
+<!-- 
+    效果分析
+    1.选项卡有两种事件类型
+    onclick:点击切换
+    onmouseover：鼠标移入进行切换
+    onmouseover+onmosueout：考虑鼠标不停的晃动，不会快速切换。
+ -->
+
+<!-- 
+     效果涉及的方法：
+     1.选择元素
+        - jquery通过$符号选择元素，里面放置和css选择器类似的内容。jquery默认可以获取1个或者多个元素。
+        $('.item'):默认获取三个含有item类的元素
+        $('.tab .item'):和上面一致
+        - 无论获取一个元素还是多个元素都是一种写法。
+        - 获取的元素和原生js获取的元素显示不一样的。
+
+     2.on(events,[selector],[data],fn)在选择元素上绑定一个或多个事件的事件处理函数。
+        - events：绑定的事件类型，没有on，可以同时绑定多个，中间空格隔开。
+        - selector：可选的，表示委托的元素(事件委托)。而且如果存在这个参数，事件处理函数里面的this指向了这个参数。
+        - data:可选的，表示事件可以传递数据，这里的数据格式一般是一个对象，可以在事件处理函数里面通过event.data.属性进行获取。
+        - fn:该事件被触发时执行的函数
+
+         $('.tab').on('click mouseover', 'button', {name: 'zhangsan'}, function(e) { //e:事件对象
+            console.log($(this)); //指向被委托的button
+            console.log(e.data.name);//事件传递的数据
+        });
+
+    3.off(events,[selector],[fn])在选择元素上移除一个或多个事件的事件处理函数。
+        $('.tab').off();//取消tab上面的所有事件
+        $('.tab').off('mouseover');//取消tab上面的mouseover事件
+
+
+    4.addClass(class|fn)为每个匹配的元素添加指定的类名。
+        - 包括多个元素添加类名。
+        $('button').addClass('hehe').addClass('haha').addClass('xixi')
+    
+    5.removeClass([class|fn])从所有匹配的元素中删除全部或者指定的类。
+        - 包括多个元素删除类名
+        $('button').removeClass('active')
+
+    6.index([selector|element])搜索匹配的元素，并返回相应元素的索引值，从0开始计数。(兄弟元素)
+        注意:添加参数，控制选择的元素索引。
+        $('button').on('click', function() {
+            console.log($(this).index()); //获取当前点击的元素的索引
+            console.log($(this).index('button')); //添加参数约定获取那些元素的索引。获取button兄弟
+        });
+
+    7.eq(index|-index)获取第N个元素,如果获取了多个元素，想操作那个元素，通过eq进行设置。
+        $('button').eq(1).on('click', function() {//给第二个按钮添加事件。
+            alert('123')
+        });
+
+    8.siblings([expr])获取当前元素的之外的其他兄弟元素集合 - 筛选或者过滤。
+        注意：尽量添加筛选的参数。
+    $('button').on('click', function() {
+        $(this).addClass('active').siblings('button').removeClass('active');
+    });
+
+
+  -->
+
+<script>
+    //1.点击事件实现tab切换
+    // $('.tab button').on('click', function() {
+    //     // $(this).index():当前按钮的索引
+
+    //     $(this).addClass('active').siblings('button').removeClass('active'); //当前点击的按钮添加active,除了当前按钮之外的其他按钮删除active类。
+
+    //     $('.tab .item').eq($(this).index()).addClass('show').siblings('.item').removeClass('show');
+    //     // 当前和按钮对应的内容添加show类,其他的item兄弟元素移除show类。
+    // });
+
+
+    //2.鼠标移入实现tab切换
+    // $('.tab button').on('mouseover', function() {
+    //     $(this).addClass('active').siblings('button').removeClass('active'); 
+    //     $('.tab .item').eq($(this).index()).addClass('show').siblings('.item').removeClass('show');
+    //    
+    // });
+
+    //3.鼠标移入实现tab切换,屏蔽晃动是触发 - 延时定时器
+    // let timer = null;
+    // $('.tab button').on('mouseover', function() {
+    //     timer = setTimeout(() => {
+    //         $(this).addClass('active').siblings('button').removeClass('active');
+    //         $('.tab .item').eq($(this).index()).addClass('show').siblings('.item').removeClass('show');
+    //     }, 300);
+    // });
+
+    // //核心：鼠标移出删除定时器
+    // $('.tab button').on('mouseout', function() {
+    //     clearTimeout(timer);
+    // });
+</script>

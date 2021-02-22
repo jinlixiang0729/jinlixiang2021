@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'microsoft yahei';
+        }
+
+        html,
+        body {
+            width: 100%;
+        }
+
+        #loutinav {
+            width: 35px;
+            position: fixed;
+            top: 100px;
+            left: 50px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        #loutinav ul li {
+            width: 35px;
+            height: 32px;
+            border-bottom: 1px dotted #DDDDDD;
+            list-style: none;
+            font-size: 12px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            padding: 10px 0;
+            background: #918888;
+            color: #fff;
+        }
+
+        #loutinav ul li span {
+            width: 35px;
+            height: 32px;
+            padding: 10px 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #loutinav ul li.last {
+            background: #5e4a4a;
+            color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #loutinav ul li.active span {
+            background: #c00;
+            color: #fff;
+            display: block;
+        }
+
+        #loutinav ul li:hover span {
+            background: #c00;
+            color: #fff;
+            display: block;
+        }
+
+        #header {
+            width: 1000px;
+            height: 1000px;
+            background: #cc6633;
+            margin: 0 auto;
+            font-size: 50px;
+            line-height: 1000px;
+            text-align: center;
+            color: #000;
+        }
+
+        #main {
+            width: 1000px;
+            background: #66ff66;
+            margin: 0 auto;
+        }
+
+        #main .louceng {
+            height: 600px;
+            width: 1000px;
+            font-size: 50px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #footer {
+            width: 1000px;
+            height: 400px;
+            background: red;
+            margin: 0 auto;
+            font-size: 50px;
+            line-height: 400px;
+            text-align: center;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <!--左侧楼梯-->
+    <div id="loutinav">
+        <ul>
+            <li class="active">
+                <span>享品质</span>
+            </li>
+            <li>
+                <span>服饰美妆</span>
+            </li>
+            <li>
+                <span>电脑数码</span>
+            </li>
+            <li>
+                <span>3C运动</span>
+            </li>
+            <li>
+                <span>爱吃</span>
+            </li>
+            <li>
+                <span>母婴居家</span>
+            </li>
+            <li>
+                <span>图书汽车</span>
+            </li>
+            <li>
+                <span>虚拟</span>
+            </li>
+            <li>
+                <span>还没逛够</span>
+            </li>
+            <li class="last">顶部</li>
+        </ul>
+    </div>
+
+    <div id="header">
+        网站头部(height:1000px)
+    </div>
+    <!--楼层内容开始-->
+    <div id="main">
+        <div class="louceng" style="background: #cc0033;">享品质</div>
+        <div class="louceng" style="background: #999933;">服饰美妆</div>
+        <div class="louceng" style="background: #ccff33;">电脑数码</div>
+        <div class="louceng" style="background: #006633;">3C运动</div>
+        <div class="louceng" style="background: #6666cc;">爱吃</div>
+        <div class="louceng" style="background: #ff6600;">母婴居家</div>
+        <div class="louceng" style="background: #ffff00;">图书汽车</div>
+        <div class="louceng" style="background: #3333ff;">虚拟</div>
+        <div class="louceng" style="background: #ff00cc;">还没逛够</div>
+    </div>
+    <div id="footer">
+        网站底部
+    </div>
+</body>
+
+</html>
+<!-- 
+    1.each(callback):以每一个匹配的元素作为上下文来执行一个函数。返回'false'将停止循环 (就像在普通的循环中使用'break')
+
+    $('#loutinav li').each(function(index, element) { //index:元素的索引  element:原生的元素对象。
+        console.log($(element).html());
+        return false; //终止循环。
+    });
+
+    2.not(expr|ele|fn)删除与指定表达式匹配的元素(排除)
+    $('#loutinav li').not('.last').on('click', function() {//获取所有的li排除含有last的li
+        alert(1);
+    });
+
+
+
+ -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.js"></script>
+<script>
+    //1.楼梯的显示与隐藏 - onscroll事件。
+    let $louti = $('#loutinav'); //整个楼梯
+    let $louceng = $('.louceng'); //9个楼层
+    let $loutinav = $('#loutinav li').not('.last'); //9个楼梯
+    function scroll() {
+        let $top = $(window).scrollTop();
+        if ($top >= 400) {
+            $louti.show();
+        } else {
+            $louti.hide();
+        }
+        //4.通过滚动条的改变，给对应的楼梯添加激活状态(active)
+        //核心：滚动条的top和楼层的top值(如果楼层的top值>滚动条的top值，给楼层对应的楼梯添加一个激活状态)
+        //获取9个楼层的top值。
+        $louceng.each(function (index, element) {
+            let $loucengtop = $(element).offset().top + 200; //每一个楼层的top值。
+            if ($loucengtop >= $top) {
+                $loutinav.removeClass('active'); //清除所有的楼梯上面的active。
+                $loutinav.eq(index).addClass('active'); //当前对应的楼梯显示
+                return false; //保证都是满足条件的第一个添加active.
+            }
+        });
+
+        $('title').html($top);
+    }
+    scroll();
+
+    $(window).on('scroll', function () {
+        scroll();
+    });
+
+    //2.点击楼梯切换到对应的楼层(运动)
+    //任意的获取每一个楼层的top值。
+    //点击楼梯，将楼梯对应的楼层的top值给滚动条的top值。
+    $loutinav.on('click', function () {
+        $(window).off('scroll'); //取消滚轮事件。
+        $(this).addClass('active').siblings('li').removeClass('active');
+        let $top = $louceng.eq($(this).index()).offset().top;
+        //赋值给滚动条
+        $('html').animate({
+            scrollTop: $top
+        }, function () { //点击运动结束，开启滚轮事件
+            $(window).on('scroll', function () {
+                scroll();
+            });
+        });
+    });
+
+    //3.回到顶部
+    $('.last').on('click', function () {
+        //赋值给滚动条
+        $('html').animate({
+            scrollTop: 0
+        });
+    });
+</script>

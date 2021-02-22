@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="checkbox" class="allselect">全选<br>
+    <input type="checkbox">1<br>
+    <input type="checkbox">2<br>
+    <input type="checkbox">3<br>
+    <input type="checkbox">4<br>
+    <input type="checkbox">5<br>
+    <input type="checkbox">6
+
+</body>
+
+</html>
+<!-- 
+    1.单击全选按钮，其他的复选框的选择的状态和全选按钮一致。
+    2.其他的复选框如果都是选中状态，全选对应的选中。
+    
+
+
+
+ -->
+<!-- 
+    1.prop(name|properties|key,value|fn)读写元素对象内部的属性值，仅能够读写默认的属性。比较适合表单状态的判断。
+    2.attr(name|properties|key,value|fn)读写元素对象内部的属性值，可以读写自定义属性。
+        alert($('.allselect').attr('checked')); //undefined
+        alert($('.allselect').prop('checked')); //false
+    3.:checkbox 匹配所有复选框
+        alert($('input:checkbox').length)
+    4.:checked匹配所有选中的被选中元素(复选框、单选框等，不包括select中的option)
+        alert($('input:checked').length)
+  -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.js"></script>
+
+<script>
+    // 1.单击全选按钮，其他的复选框的选择的状态和全选按钮一致。
+    let otherinput = $('input').not('.allselect'); //获取下面的6个复选框
+    $('.allselect').on('click', function() {
+        // alert($(this).prop('checked')); //获取选中状态
+        otherinput.prop('checked', $(this).prop('checked'))
+    });
+
+    // 2.其他的复选框如果都是选中状态，全选对应的选中。
+    otherinput.on('click', function() {
+        if ($('input:checked').not('.allselect').length === otherinput.length) {
+            $('.allselect').prop('checked', true);
+        } else {
+            $('.allselect').prop('checked', false);
+        }
+    });
+</script>
